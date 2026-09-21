@@ -38,8 +38,7 @@ domínio são configurados manualmente.
 
 ## Notas
 
-- O repositório do projeto `revisor-notas-mcp` existe, mas é privado. Os links de
-  GitHub vão falhar para visitantes sem acesso até ele ser tornado público.
+- O repositório do projeto `revisor-notas-mcp` é público, então os links de GitHub funcionam.
 - O exemplo de retorno na página é a saída real de uma nota sintética de teste do
   repositório. Nenhum dado real de paciente aparece na página.
 - Não é apoio à decisão clínica nem dispositivo médico.

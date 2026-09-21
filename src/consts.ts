@@ -1,6 +1,5 @@
 // Constantes de link e marca, centralizadas.
-// NOTA: o repo revisor-notas-mcp existe, mas e PRIVADO. Enquanto estiver
-// privado, este link vai 404 para visitantes sem acesso.
+// O repo revisor-notas-mcp e publico.
 export const PROJECT = "revisor-notas-mcp";
 export const GITHUB_URL = "https://github.com/fabianofilho/revisor-notas-mcp";
 export const IAMED_URL = "https://iamed.cc";
