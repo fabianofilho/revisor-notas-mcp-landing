@@ -1,0 +1,44 @@
+---
+const camadas = [
+  { n: "01", titulo: "Parser SOAP", texto: "Lê a nota no formato F/S/O/A/P, tolerando variação de formatação (marcador, caixa, espaço)." },
+  { n: "02", titulo: "Regras determinísticas", texto: "Rodam sempre, sem LLM: cabeçalho, as cinco seções, CID em formato válido, itens do plano, sinais de alarme, rodapé e os campos do subjetivo." },
+  { n: "03", titulo: "Checagem semântica", texto: "Um LLM local aponta incoerência entre queixa, exame e conduta, e sinais de alarme do diagnóstico que não aparecem investigados." },
+  { n: "04", titulo: "Problemas com origem", texto: "Cada achado sai com seção, severidade, sugestão e a origem: regra ou semantica." },
+];
+---
+
+<section id="como-funciona" class="border-b border-neutral-900">
+  <div class="mx-auto max-w-4xl px-6 py-20">
+    <p class="text-sm font-semibold uppercase tracking-wider text-emerald">Como funciona</p>
+    <h2 class="mt-3 text-2xl font-bold text-white sm:text-3xl">Duas camadas sobre a mesma nota</h2>
+
+    <ol class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        camadas.map((c, i) => (
+          <li class="relative rounded-xl border border-neutral-800 bg-ink-800 p-5">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-sm font-bold text-emerald">{c.n}</span>
+              <span class="hidden text-neutral-700 lg:inline-block" aria-hidden="true">{i < 3 ? "→" : ""}</span>
+            </div>
+            <h3 class="mt-3 text-base font-semibold text-white">{c.titulo}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-neutral-400">{c.texto}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="mt-8 flex gap-3 rounded-xl border border-emerald/25 bg-emerald/5 p-4">
+      <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7l7-4z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+      </svg>
+      <p class="text-sm leading-relaxed text-neutral-300">
+        Privacidade em código, não só em texto: o cliente do LLM
+        <strong class="font-semibold text-white">recusa com exceção</strong> qualquer endpoint que
+        não seja localhost, e nada é gravado (sem banco, sem cache, sem log do
+        conteúdo). Se o LLM local estiver fora do ar, as regras respondem sozinhas
+        e a resposta diz que a parte semântica não rodou.
+      </p>
+    </div>
+  </div>
+</section>

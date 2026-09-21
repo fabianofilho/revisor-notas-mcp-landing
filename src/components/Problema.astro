@@ -1,0 +1,37 @@
+---
+const pontos = [
+  {
+    titulo: "Formalmente completa, clinicamente incoerente",
+    texto:
+      "Uma nota pode ter todos os campos preenchidos e mesmo assim ter uma conduta que não fecha com a queixa. Regra de preenchimento não pega esse tipo de erro.",
+  },
+  {
+    titulo: "Revisar à mão é caro e inconstante",
+    texto:
+      "Conferir campo a campo, mais coerência clínica e sinais de alarme esperados, em cada nota, cansa e falha. É o tipo de checagem que uma máquina faz sem se distrair.",
+  },
+  {
+    titulo: "Nota clínica não pode sair da máquina",
+    texto:
+      "Mandar o texto de uma nota para um serviço externo é risco de privacidade. Por isso a checagem tem que rodar localmente, sem gravar nada.",
+  },
+];
+---
+
+<section id="problema" class="border-b border-neutral-900">
+  <div class="mx-auto max-w-4xl px-6 py-20">
+    <p class="text-sm font-semibold uppercase tracking-wider text-emerald">O problema</p>
+    <h2 class="mt-3 text-2xl font-bold text-white sm:text-3xl">Por que este projeto existe</h2>
+
+    <div class="mt-10 grid gap-6 sm:grid-cols-3">
+      {
+        pontos.map((p) => (
+          <div class="rounded-xl border border-neutral-800 bg-ink-800 p-5">
+            <h3 class="text-base font-semibold text-white">{p.titulo}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-neutral-400">{p.texto}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
