@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Abre em `http://localhost:4321/revisor-notas` (o `base` é `/revisor-notas`).
+Abre em `http://localhost:4321/mcps/revisor-notas` (o `base` é `/mcps/revisor-notas`).
 
 ## Build
 
@@ -33,14 +33,22 @@ npm run preview
 
 ## Deploy
 
-Destino pretendido: `https://mcp.iamed.cc/revisor-notas`. O deploy na Vercel e o
-domínio são configurados manualmente.
+Publicada em `https://iamed.cc/mcps/revisor-notas`. Este repositório não tem deploy
+próprio: o `dist/` gerado por `npm run build` (com `base` `/mcps/revisor-notas`) é
+copiado para `mcps/revisor-notas/` do repositório do site
+[`Medicina-IA/medicina-ia.github.io`](https://github.com/Medicina-IA/medicina-ia.github.io),
+e o push na `main` de lá dispara o deploy na Vercel (projeto `medicina-ia.github.io`,
+domínio `iamed.cc`). Mudança aqui só vai ao ar depois dessa cópia.
+
+O projeto é só de instalação local (stdio). Não há serviço hospedado.
 
 ## Notas
 
 - O repositório do projeto `revisor-notas-mcp` é público, então os links de GitHub funcionam.
-- O exemplo de retorno na página é a saída real de uma nota sintética de teste do
-  repositório. Nenhum dado real de paciente aparece na página.
+- Os exemplos de retorno na página são saídas reais da v0.1.0: a nota de dor torácica é
+  sintética e rodou contra um LLM local (Qwen3.5 9B); o exemplo de seção ausente usa a
+  fixture `NOTA_SEM_OBJETIVO` do repositório, sem LLM. Nenhum dado real de paciente
+  aparece na página.
 - Não é apoio à decisão clínica nem dispositivo médico.
 
 ## Licença

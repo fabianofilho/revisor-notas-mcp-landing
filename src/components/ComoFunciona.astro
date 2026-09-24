@@ -36,8 +36,11 @@ const camadas = [
         Privacidade em código, não só em texto: o cliente do LLM
         <strong class="font-semibold text-white">recusa com exceção</strong> qualquer endpoint que
         não seja localhost, e nada é gravado (sem banco, sem cache, sem log do
-        conteúdo). Se o LLM local estiver fora do ar, as regras respondem sozinhas
-        e a resposta diz que a parte semântica não rodou.
+        conteúdo). Se a checagem semântica não rodar (LLM fora do ar, falha,
+        nota vazia), as regras respondem sozinhas e as duas tools dizem o motivo
+        real em <span class="font-mono text-neutral-200">motivo_semantica_pulada</span>
+        e no <span class="font-mono text-neutral-200">aviso</span>. Nota vazia devolve
+        um único erro, <span class="font-mono text-neutral-200">Nota vazia.</span>
       </p>
     </div>
   </div>
