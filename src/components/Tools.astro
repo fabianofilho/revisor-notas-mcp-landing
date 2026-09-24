@@ -1,30 +1,59 @@
 ---
 import CodeBlock from "./CodeBlock.astro";
 
-const validarSig = `validar_nota_soap(texto_nota: str)`;
+const validarSig = `validar_nota_soap(texto_nota: str) -> {
+  total_erros, total_avisos,
+  problemas: [{secao, severidade, descricao, sugestao, origem}],
+  checagem_semantica_feita, motivo_semantica_pulada, aviso
+}`;
 
-// Retorno real de uma nota SINTETICA de teste do repositorio (README).
+// Retorno real de uma nota SINTETICA (dor toracica), com Qwen3.5 9B local.
 const validarRetorno = `{
   "total_erros": 0,
   "total_avisos": 2,
-  "checagem_semantica_feita": true,
   "problemas": [
     {
-      "secao": "F, S, A, P",
+      "secao": "S, A, P",
       "severidade": "aviso",
-      "descricao": "A queixa é dor torácica irradiando para o braço esquerdo, com hipertensão e tabagismo, o que sugere etiologia cardíaca. A hipótese final é dor muscular e a conduta é analgésico simples.",
+      "descricao": "A queixa principal é dor torácica em aperto irradiando para o braço esquerdo, altamente sugestiva de síndrome coronariana aguda, mas a hipótese diagnóstica final é dor muscular (CID M79.1) e a conduta é analgésico comum, sem investigação ou tratamento para causa cardíaca.",
+      "sugestao": "Confira se a conduta corresponde à hipótese e ao que foi relatado.",
       "origem": "semantica"
     },
     {
       "secao": "S",
       "severidade": "aviso",
-      "descricao": "Sinais de alarme esperados que não aparecem como investigados: sudorese, dispneia, náuseas.",
+      "descricao": "Sinais de alarme esperados para a hipótese que não aparecem como investigados: sudorese, dispneia, palidez.",
+      "sugestao": "Registre a investigação, mesmo que negativa ('nega ...').",
       "origem": "semantica"
     }
-  ]
+  ],
+  "checagem_semantica_feita": true,
+  "motivo_semantica_pulada": null,
+  "aviso": "As checagens de coerência e de sinais de alarme são feitas por um LLM local e são probabilísticas: leia como sugestão de revisão, não como veredito clínico."
 }`;
 
-const sugerirSig = `sugerir_correcoes(texto_nota: str)`;
+const sugerirSig = `sugerir_correcoes(texto_nota: str) -> {
+  nota_anotada, total_anotacoes,
+  checagem_semantica_feita, motivo_semantica_pulada, aviso
+}`;
+
+// Trecho real de nota_anotada para a mesma nota sintetica (linhas omitidas).
+const sugerirRetorno = `#TELEMEDICINA#
+-F: Paciente refere dor no peito.
+-S: Refere dor torácica em aperto há 3 horas, irradiando para o braço esquerdo.
+...
+Hábitos: tabagista, 20 maços-ano.
+    <<AVISO [S, A, P]: A queixa principal é dor torácica em aperto irradiando para o braço esquerdo, altamente sugestiva de síndrome coronariana aguda, mas a hipótese diagnóstica final é dor muscular (CID M79.1) e a conduta é analgésico simples, sem investigação ou tratamento para causa cardíaca. → Confira se a conduta corresponde à hipótese e ao que foi relatado.>>
+    <<AVISO: Sinais de alarme esperados para a hipótese que não aparecem como investigados: sudorese, dispneia. → Registre a investigação, mesmo que negativa ('nega ...').>>
+-O: Ectoscopia em tela: BEG, consciente, orientado em tempo e espaço.
+-A: Dor muscular (CID: M79.1).
+-P:
+...`;
+
+const semAnotar = `<<PROBLEMAS NO DOCUMENTO>>
+    <<ERRO [O]: Seção -O: ausente ou vazia. → Preencha a seção -O: conforme o template.>>
+#TELEMEDICINA#
+...`;
 ---
 
 <section id="tools" class="border-b border-neutral-900">
@@ -32,9 +61,10 @@ const sugerirSig = `sugerir_correcoes(texto_nota: str)`;
     <p class="text-sm font-semibold uppercase tracking-wider text-emerald">As ferramentas</p>
     <h2 class="mt-3 text-2xl font-bold text-white sm:text-3xl">Duas tools MCP expostas ao modelo</h2>
     <p class="mt-3 max-w-2xl text-neutral-400">
-      Cada problema traz a seção, a severidade e a origem (regra ou semantica). O
-      exemplo abaixo é a saída real de uma nota sintética de teste: sem erros de
-      formato, mas com um alerta clínico que só a camada semântica pega.
+      Cada problema traz a seção, a severidade, a sugestão e a origem (regra ou
+      semantica). Os exemplos abaixo são a saída real das duas tools para a mesma
+      nota sintética: sem erros de formato, mas com um alerta clínico que só a
+      camada semântica pega.
     </p>
 
     <div class="mt-10 grid gap-6 lg:grid-cols-2">
@@ -47,28 +77,29 @@ const sugerirSig = `sugerir_correcoes(texto_nota: str)`;
           </p>
         </div>
         <CodeBlock code={validarSig} lang="python" />
-        <CodeBlock code={validarRetorno} lang="json" caption="Saída real de uma nota sintética de teste" />
+        <CodeBlock code={validarRetorno} lang="json" caption="Saída real de uma nota sintética (dor torácica), com LLM local" />
       </article>
 
       <article class="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-ink-800 p-5">
         <div>
           <h3 class="font-mono text-base font-semibold text-emerald">sugerir_correcoes</h3>
           <p class="mt-2 text-sm leading-relaxed text-neutral-400">
-            A mesma nota com linhas <span class="font-mono text-neutral-300">&lt;&lt;AVISO: ...&gt;&gt;</span>
-            inseridas abaixo de cada seção. Não reescreve o texto original: quem
+            A mesma nota com os problemas inseridos como linhas
+            <span class="font-mono text-neutral-300">&lt;&lt;ERRO: ...&gt;&gt;</span> ou
+            <span class="font-mono text-neutral-300">&lt;&lt;AVISO: ...&gt;&gt;</span>.
+            Não reescreve o texto original: nenhuma linha da nota muda, e quem
             decide o que mudar é quem assina.
           </p>
         </div>
         <CodeBlock code={sugerirSig} lang="python" />
-        <div class="rounded-xl border border-neutral-800 bg-[#0d0d0d] p-4 text-sm text-neutral-400">
-          <p class="font-mono text-xs leading-relaxed">
-            A - Hipótese: dor muscular<br />
-            <span class="text-amber-300">&lt;&lt;AVISO: queixa sugere etiologia cardíaca; revisar a hipótese&gt;&gt;</span><br />
-            P - Analgésico simples<br />
-            <span class="text-amber-300">&lt;&lt;AVISO: sinais de alarme não investigados: sudorese, dispneia&gt;&gt;</span>
-          </p>
-          <p class="mt-3 border-t border-neutral-800 pt-2 text-xs text-neutral-500">Ilustração do formato de anotação inline.</p>
-        </div>
+        <ul class="flex flex-col gap-2 text-sm leading-relaxed text-neutral-400">
+          <li>Cada problema aparece <strong class="font-semibold text-neutral-200">uma única vez</strong>, no fim da primeira seção que ele cita e que existe na nota, com a sugestão depois de <span class="font-mono text-neutral-300">→</span> quando houver.</li>
+          <li>Achado que cita várias seções leva a lista entre colchetes, como <span class="font-mono text-neutral-300">&lt;&lt;AVISO [S, A, P]: ...&gt;&gt;</span>.</li>
+          <li>O que não tem seção na nota (cabeçalho ausente, seção ausente) vai para o bloco <span class="font-mono text-neutral-300">&lt;&lt;PROBLEMAS NO DOCUMENTO&gt;&gt;</span> no topo.</li>
+          <li><span class="font-mono text-neutral-300">total_anotacoes</span> é igual ao número de problemas.</li>
+        </ul>
+        <CodeBlock code={sugerirRetorno} lang="text" caption="Trecho real de nota_anotada para a mesma nota sintética" />
+        <CodeBlock code={semAnotar} lang="text" caption="Seção ausente vai para o topo, com o rótulo [O] (saída real sem LLM, nota sintética de teste)" />
       </article>
     </div>
   </div>

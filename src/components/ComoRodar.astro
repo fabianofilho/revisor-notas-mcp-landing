@@ -16,8 +16,11 @@ uv run revisor-cli validar nota.txt           # ou cole a nota no stdin
 uv run revisor-cli validar nota.txt --sem-llm # só as regras determinísticas
 uv run revisor-cli anotar nota.txt            # nota com anotações inline
 
-# 4. subir o servidor MCP e conectar ao seu cliente
-uv run revisor-notas-mcp`;
+# 4. registrar o servidor MCP (stdio) no seu cliente, ex.: Claude Code
+claude mcp add revisor-notas --scope user \\
+  -e QWEN_ENDPOINT=http://127.0.0.1:8080/v1 \\
+  -e QWEN_MODEL=local-model \\
+  -- uv --directory /caminho/para/revisor-notas-mcp run revisor-notas-mcp`;
 ---
 
 <section id="como-rodar" class="border-b border-neutral-900">
@@ -25,9 +28,12 @@ uv run revisor-notas-mcp`;
     <p class="text-sm font-semibold uppercase tracking-wider text-emerald">Como rodar</p>
     <h2 class="mt-3 text-2xl font-bold text-white sm:text-3xl">Roda na sua máquina</h2>
     <p class="mt-3 max-w-2xl text-neutral-400">
-      Não é um serviço hospedado e não tem banco de dados. Você clona, aponta para
-      o seu LLM local (obrigatoriamente localhost) e o servidor MCP roda ali. Sem
-      LLM, a validação por regras responde sozinha.
+      Não é um serviço hospedado e não tem banco de dados. A distribuição é por
+      clone + <span class="font-mono text-neutral-200">uv</span> (não há pacote no
+      PyPI): você clona, aponta para o seu LLM local (obrigatoriamente localhost)
+      e o servidor MCP roda ali, via stdio. Precisa de Python 3.12+ e usa o SDK
+      MCP 2.x (<span class="font-mono text-neutral-200">mcp&gt;=2.2,&lt;3</span>).
+      Sem LLM, a validação por regras responde sozinha.
     </p>
 
     <div class="mt-8">
