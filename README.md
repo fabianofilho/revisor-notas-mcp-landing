@@ -5,7 +5,8 @@ Landing page do
 servidor MCP que confere notas clínicas no formato SOAP (regras determinísticas
 mais checagem semântica por LLM local), rodando inteiramente na máquina do
 usuário. Um projeto [IA.med](https://iamed.cc), da mesma família do `anvisa-mcp`,
-`radar-cfm-mcp`, `protocolos-pcdt-mcp`, `raciocinio-br-mcp` e `radar-papers-mcp`.
+`radar-cfm-mcp`, `protocolos-pcdt-mcp`, `ans-mcp`, `raciocinio-br-mcp` e
+`radar-papers-mcp`.
 
 Página estática, sem backend e sem coleta de dados de visitante.
 
